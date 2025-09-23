@@ -14,7 +14,7 @@ public class Payment {
   private Long orderId;
   private String currency;
   private BigDecimal foreignCurrencyAmount;
-  private BigDecimal exRate;
+  private BigDecimal exchangeRate;
   private BigDecimal convertedAmount;
   private LocalDateTime validUntil;
 
