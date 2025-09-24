@@ -37,8 +37,8 @@ class PaymentServiceTest {
   @DisplayName("prepare 메서드가 요구사항 3가지를 잘 충족했는지 검증")
   void convertedAmount() {
     testAmount(valueOf(500), valueOf(5_000), clock);
-    testAmount(valueOf(1_00), valueOf(10_000), clock);
-    testAmount(valueOf(3_00), valueOf(30_000), clock);
+    testAmount(valueOf(100), valueOf(1_000), clock);
+    testAmount(valueOf(300), valueOf(3_000), clock);
   }
 
   @Test

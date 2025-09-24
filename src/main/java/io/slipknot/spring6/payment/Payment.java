@@ -18,5 +18,10 @@ public class Payment {
   private BigDecimal convertedAmount;
   private LocalDateTime validUntil;
 
+  public static Payment prepared(Long orderId, String currency, BigDecimal foreignCurrencyAmount, BigDecimal exchangeRate, LocalDateTime now) {
+    BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exchangeRate);
+    LocalDateTime validUtil = now.plusMinutes(30);
+    return new Payment(orderId, currency, foreignCurrencyAmount, exchangeRate, convertedAmount, validUtil);
+  }
 
 }

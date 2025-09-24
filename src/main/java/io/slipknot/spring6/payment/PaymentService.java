@@ -23,9 +23,8 @@ public class PaymentService {
 
   public Payment prepare(Long orderId, String currency, BigDecimal foreignCurrencyAmount) {
     BigDecimal exchangeRate = exchangeRateProvider.getExchangeRate(currency);
-    BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exchangeRate);
-    LocalDateTime validUtil = LocalDateTime.now(clock).plusMinutes(30);
 
-    return new Payment(orderId, currency, foreignCurrencyAmount, exchangeRate, convertedAmount, validUtil);
+    // return new Payment(orderId, currency, foreignCurrencyAmount, exchangeRate, convertedAmount, validUtil);
+    return Payment.prepared(orderId, currency, foreignCurrencyAmount, exchangeRate, LocalDateTime.now(clock));
   }
 }

@@ -1,6 +1,5 @@
 package io.slipknot.spring6.payment;
 
-import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.slipknot.spring6.TestPaymentConfig;
