@@ -35,3 +35,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.gemini/
+gha-creds-*.json
+
+### Github  ###
+.github/
+
+### Gemini ###
+GEMINI.md
