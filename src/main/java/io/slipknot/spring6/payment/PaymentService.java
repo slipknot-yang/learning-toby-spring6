@@ -1,6 +1,7 @@
 package io.slipknot.spring6.payment;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 /**
@@ -13,13 +14,18 @@ import java.time.LocalDateTime;
 public class PaymentService {
 
   private final ExchangeRateProvider exchangeRateProvider;
+  private final Clock clock;
 
-  public PaymentService(ExchangeRateProvider exchangeRateProvider) {
+  public PaymentService(ExchangeRateProvider exchangeRateProvider, Clock clock) {
     this.exchangeRateProvider = exchangeRateProvider;
+    this.clock = clock;
   }
 
-  public Payment prepare(Long orderId, String currency, BigDecimal amount) {
+  public Payment prepare(Long orderId, String currency, BigDecimal foreignCurrencyAmount) {
     BigDecimal exchangeRate = exchangeRateProvider.getExchangeRate(currency);
-    return new Payment(orderId, currency, amount, exchangeRate, amount.multiply(exchangeRate), LocalDateTime.now().plusDays(1));
+    BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exchangeRate);
+    LocalDateTime validUtil = LocalDateTime.now(clock).plusMinutes(30);
+
+    return new Payment(orderId, currency, foreignCurrencyAmount, exchangeRate, convertedAmount, validUtil);
   }
 }

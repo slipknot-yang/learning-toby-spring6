@@ -1,4 +1,4 @@
-package io.slipknot.spring6.learning;
+package io.slipknot.spring6.learningtest;
 
 import static java.util.Comparator.comparingInt;
 

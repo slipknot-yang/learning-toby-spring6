@@ -4,6 +4,11 @@ import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,18 +26,33 @@ import org.junit.jupiter.api.Test;
  */
 class PaymentServiceTest {
 
+  Clock clock;
+
+  @BeforeEach
+  void beforeEach() {
+    clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+  }
+
   @Test
   @DisplayName("prepare 메서드가 요구사항 3가지를 잘 충족했는지 검증")
   void convertedAmount() {
-    testAmount(valueOf(500), valueOf(5_000));
-
-    // 원화환산금액의 유효시간 계산
-    // assertThat(payment.getValidUntil()).isAfter(LocalDateTime.now());
+    testAmount(valueOf(500), valueOf(5_000), clock);
+    testAmount(valueOf(1_00), valueOf(10_000), clock);
+    testAmount(valueOf(3_00), valueOf(30_000), clock);
   }
 
-  private static void testAmount(BigDecimal exchangeRate, BigDecimal convertedAmount) {
+  @Test
+  void validUtil() {
+    PaymentService paymentService = new PaymentService(new ExchangeRateProviderStub(valueOf(1_000)), clock);
+    Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
+
+    String expectedValidUtil = LocalDateTime.now(clock).plusMinutes(30).toString();
+    assertThat(payment.getValidUntil()).isEqualTo(expectedValidUtil);
+  }
+
+  private static void testAmount(BigDecimal exchangeRate, BigDecimal convertedAmount, Clock clock) {
     ExchangeRateProvider exchangeRateProvider = new ExchangeRateProviderStub(exchangeRate);  // Stub/Imposter/Test Double(대역) 이용
-    PaymentService paymentService = new PaymentService(exchangeRateProvider);
+    PaymentService paymentService = new PaymentService(exchangeRateProvider, clock);
     Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
 
     // BigDecimal은 isEqualTo보다는 isEqualByComparingTo를 사용하여 검증한다.
